@@ -4,10 +4,9 @@ build:
 run:
 	./build-stream8-kernel  kernel-4.18.0-448.el8.src.rpm  output 
 
-# commands to apply patches
 
 patch:
-# 	wget "https://vault.centos.org/8-stream/BaseOS/Source/SPackages/kernel-4.18.0-448.el8.src.rpm" -O kernel-4.18.0-448.el8.src.rpm
+ 	# wget "https://vault.centos.org/8-stream/BaseOS/Source/SPackages/kernel-4.18.0-448.el8.src.rpm" -O kernel-4.18.0-448.el8.src.rpm
 
 	docker build . \
 		--build-arg srpmName=kernel-4.18.0-448.el8.src.rpm \
@@ -16,5 +15,5 @@ patch:
 	
 	docker run \
 		-it --entrypoint /apply_patches.sh \
-		-v ./output:/root/rpmbuild/SRPMS \
+		-v ./patched:/root/rpmbuild/SRPMS \
 		kernel-patcher
