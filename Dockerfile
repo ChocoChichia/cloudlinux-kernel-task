@@ -29,6 +29,8 @@ RUN rpm -ivh  "$srpmName"
 RUN dnf builddep -y rpmbuild/SPECS/kernel.spec
 
 COPY entrypoint.sh /entrypoint.sh
+COPY apply_patches.sh /apply_patches.sh
 RUN chmod +x /entrypoint.sh
+RUN chmod +x /apply_patches.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
