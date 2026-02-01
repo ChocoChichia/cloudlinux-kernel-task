@@ -1,5 +1,7 @@
 FROM quay.io/centos/centos:stream8
 
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
 RUN dnf -y update && dnf clean all
 
@@ -7,11 +9,11 @@ RUN dnf install -y \
     dnf-plugins-core \
     rpm-build \
     rpmdevtools \
-    git \
     curl \
-    gcc \
-    make \
+    git \
     && dnf clean all
+
+RUN dnf config-manager --set-enabled powertools
 
 RUN rpmdev-setuptree
 
@@ -22,16 +24,9 @@ RUN curl -LO \
 
 RUN rpm -ivh kernel-4.18.0-448.el8.src.rpm
 
-RUN rm -rf kernel-*.rpm
-
 RUN dnf builddep -y rpmbuild/SPECS/kernel.spec
-
-WORKDIR /root/rpmbuild/SPECS
-RUN rpmbuild -bb kernel.spec
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-WORKDIR /root
 
 ENTRYPOINT ["/entrypoint.sh"]
