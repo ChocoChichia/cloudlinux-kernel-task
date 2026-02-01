@@ -1,5 +1,10 @@
 build:
-	docker build . -t kernel-builder 
+	docker build --build-arg srpmName=kernel-4.18.0-448.el8.src.rpm \
+	 --build-arg srpmPath=./kernel-4.18.0-448.el8.src.rpm -t kernel-builder .
 
 run:
-	docker run --rm kernel-builder
+	mkdir -p output
+	docker run --rm \
+		-v ./output:/root/rpmbuild/RPMS/ \
+		kernel-builder
+

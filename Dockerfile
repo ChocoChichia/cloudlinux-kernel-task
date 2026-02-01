@@ -1,5 +1,8 @@
 FROM quay.io/centos/centos:stream8
 
+ARG srpmPath
+ARG srpmName
+
 RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
@@ -19,10 +22,9 @@ RUN rpmdev-setuptree
 
 WORKDIR /root
 
-RUN curl -LO \
-    https://vault.centos.org/8-stream/BaseOS/Source/SPackages/kernel-4.18.0-448.el8.src.rpm
+COPY "$srpmPath" .
 
-RUN rpm -ivh kernel-4.18.0-448.el8.src.rpm
+RUN rpm -ivh  "$srpmName"
 
 RUN dnf builddep -y rpmbuild/SPECS/kernel.spec
 
